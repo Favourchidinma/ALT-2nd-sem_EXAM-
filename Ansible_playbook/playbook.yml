@@ -1,0 +1,48 @@
+---
+
+- name: Deploy and Verify PHP laravel Application
+  hosts: 192.168.20.31
+  become: yes
+  tasks:
+
+    - name: update & upgrade server
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+
+    - name: Create a cron job to check the server's uptime every 12 am.
+      cron:
+        name: set cron job to check uptime of the server every 12 am
+        minute: "0"
+        hour: "0"
+        day: "*"
+        month: "*"
+        weekday: "*"
+        job: "/usr/bin/uptime > /var/log/uptime_check.log 2>&1"
+        state: present
+
+
+    - name: Copy Bash script to slave node
+      copy:
+        src: bash_laravel-slave.sh
+        dest: ~/
+        owner: root
+        group: root
+        mode: 0744
+
+
+    - name: Make the bash script executable
+      command: chmod +x ~/bash_laravel-slave.sh
+      
+
+    - name: Run the Bash Script
+      command: bash bash_laravel-slave.sh favour favour99@ < /dev/null 
+
+
+      
+
+
+       
+
+    
